@@ -3,39 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Jogo no GitHub</title>
-    <!-- Aqui conectamos com o arquivo que está dentro da pasta css -->
+    <title>Space Expedition: Deluxe Edition</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
     <div id="game-container">
-        <!-- Placar e Telas do Jogo -->
-        <div id="ui-layer">
-            <div id="hud">
-                <div>Pontos: <span id="score">0</span></div>
-                <div>Recorde: <span id="high-score">0</span></div>
+        <!-- 1. CAPA INICIAL (MAIN MENU) -->
+        <div id="menu-screen" class="screen">
+            <div class="game-logo">
+                <span class="logo-sub">MISSION</span>
+                <h1 class="logo-main">SPACE</h1>
+                <span class="logo-sub">EXPEDITION</span>
+            </div>
+            
+            <p class="game-tagline">Sobreviva à tempestade de asteroides no espaço profundo.</p>
+            
+            <div class="menu-buttons">
+                <button id="start-btn" class="btn btn-primary">INICIAR MISSÃO</button>
+                <button id="how-to-btn" class="btn btn-secondary">COMO JOGAR</button>
             </div>
 
-            <!-- Tela Inicial -->
-            <div id="menu-screen" class="screen">
-                <h1>SPACE EXPEDITION</h1>
-                <p>Use as setas Esquerda e Direita (←  →) para desviar.</p>
-                <button id="start-btn" class="btn">Jogar</button>
-            </div>
-
-            <!-- Tela de Fim de Jogo -->
-            <div id="game-over-screen" class="screen hidden">
-                <h1 class="danger">GAME OVER</h1>
-                <button id="restart-btn" class="btn">Tentar De Novo</button>
+            <div class="menu-footer">
+                <div>Recorde Atual: <span id="menu-high-score">0</span> pts</div>
             </div>
         </div>
 
-        <!-- O quadrado preto onde o jogo acontece de verdade -->
+        <!-- TELA MODAL DE INSTRUÇÕES -->
+        <div id="instructions-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2>Como Jogar</h2>
+                <div class="instruction-item">
+                    <span class="key-cap">←</span>
+                    <span class="key-cap">→</span>
+                    <p>Use as setas laterais do teclado para mover sua nave espacial.</p>
+                </div>
+                <div class="instruction-item">
+                    <p>Desvie de todos os meteoros vermelhos. Cada meteoro esquivado garante <strong>+10 pontos</strong>. Se a blindagem chegar a 0%, a missão falha!</p>
+                </div>
+                <button id="close-instructions-btn" class="btn btn-secondary">ENTENDIDO</button>
+            </div>
+        </div>
+
+        <!-- 2. PÁGINA DO JOGO EM ANDAMENTO (GAMEPLAY INTERFACE) -->
+        <div id="gameplay-interface" class="interface-overlay hidden">
+            <div class="hud-top">
+                <div class="hud-box">
+                    <span class="hud-label">PONTOS</span>
+                    <span id="score" class="hud-value">0</span>
+                </div>
+                <div class="hud-box">
+                    <span class="hud-label">RECORDE</span>
+                    <span id="high-score" class="hud-value">0</span>
+                </div>
+            </div>
+            
+            <div class="hud-bottom">
+                <span class="hud-label">INTEGRIDADE DA BLINDAGEM</span>
+                <div class="health-bar-container">
+                    <div id="health-bar" class="health-bar-fill"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. TELA DE FINALIZAÇÃO (GAME OVER) -->
+        <div id="game-over-screen" class="screen hidden">
+            <div class="game-over-header">
+                <h1 class="danger">MISSÃO FRACASSADA</h1>
+                <p>Sua nave não resistiu aos impactos na atmosfera espacial.</p>
+            </div>
+
+            <div class="score-summary">
+                <div class="summary-box">
+                    <span>Pontuação Final</span>
+                    <h2 id="final-score">0</h2>
+                </div>
+                <div id="new-record-tag" class="record-badge hidden">NOVO RECORDE!</div>
+            </div>
+
+            <div class="menu-buttons">
+                <button id="restart-btn" class="btn btn-primary">TENTAR NOVAMENTE</button>
+                <button id="back-to-menu-btn" class="btn btn-secondary">VOLTAR AO MENU</button>
+            </div>
+        </div>
+
+        <!-- Canvas onde o jogo roda graficamente -->
         <canvas id="gameCanvas"></canvas>
     </div>
 
-    <!-- Aqui chamamos o código principal que está dentro da pasta js -->
     <script type="module">
         import { GameEngine } from './js/Engine.js';
         window.addEventListener('DOMContentLoaded', () => {
