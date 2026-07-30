@@ -3,7 +3,7 @@ export class Enemy {
         this.size = Math.random() * 20 + 20;
         this.x = Math.random() * (canvasWidth - this.size);
         this.y = -this.size;
-        this.speed = Math.random() * 3 + 3;
+        this.speed = Math.random() * 3 + 4;
     }
 
     update() {
