@@ -1,102 +1,281 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Space Expedition: Deluxe Edition</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
+:root {
+    --bg-dark: #04040c;
+    --primary: #00ffcc;
+    --primary-dim: #00ccb0;
+    --danger: #ff4757;
+    --text-muted: #8a8a9e;
+    --glass: rgba(10, 10, 25, 0.85);
+}
 
-    <div id="game-container">
-        <!-- 1. CAPA INICIAL (MAIN MENU) -->
-        <div id="menu-screen" class="screen">
-            <div class="game-logo">
-                <span class="logo-sub">MISSION</span>
-                <h1 class="logo-main">SPACE</h1>
-                <span class="logo-sub">EXPEDITION</span>
-            </div>
-            
-            <p class="game-tagline">Sobreviva à tempestade de asteroides no espaço profundo.</p>
-            
-            <div class="menu-buttons">
-                <button id="start-btn" class="btn btn-primary">INICIAR MISSÃO</button>
-                <button id="how-to-btn" class="btn btn-secondary">COMO JOGAR</button>
-            </div>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-            <div class="menu-footer">
-                <div>Recorde Atual: <span id="menu-high-score">0</span> pts</div>
-            </div>
-        </div>
+body {
+    background-color: #020205;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #ffffff;
+    overflow: hidden;
+}
 
-        <!-- TELA MODAL DE INSTRUÇÕES -->
-        <div id="instructions-modal" class="modal hidden">
-            <div class="modal-content">
-                <h2>Como Jogar</h2>
-                <div class="instruction-item">
-                    <span class="key-cap">←</span>
-                    <span class="key-cap">→</span>
-                    <p>Use as setas laterais do teclado para mover sua nave espacial.</p>
-                </div>
-                <div class="instruction-item">
-                    <p>Desvie de todos os meteoros vermelhos. Cada meteoro esquivado garante <strong>+10 pontos</strong>. Se a blindagem chegar a 0%, a missão falha!</p>
-                </div>
-                <button id="close-instructions-btn" class="btn btn-secondary">ENTENDIDO</button>
-            </div>
-        </div>
+#game-container {
+    position: relative;
+    width: 480px;
+    height: 640px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 25px 60px rgba(0, 255, 200, 0.12), 0 0 1px 1px rgba(255, 255, 255, 0.05);
+}
 
-        <!-- 2. PÁGINA DO JOGO EM ANDAMENTO (GAMEPLAY INTERFACE) -->
-        <div id="gameplay-interface" class="interface-overlay hidden">
-            <div class="hud-top">
-                <div class="hud-box">
-                    <span class="hud-label">PONTOS</span>
-                    <span id="score" class="hud-value">0</span>
-                </div>
-                <div class="hud-box">
-                    <span class="hud-label">RECORDE</span>
-                    <span id="high-score" class="hud-value">0</span>
-                </div>
-            </div>
-            
-            <div class="hud-bottom">
-                <span class="hud-label">INTEGRIDADE DA BLINDAGEM</span>
-                <div class="health-bar-container">
-                    <div id="health-bar" class="health-bar-fill"></div>
-                </div>
-            </div>
-        </div>
+canvas {
+    background: radial-gradient(circle at center, #0f0f2d 0%, #04040c 100%);
+    display: block;
+    width: 100%;
+    height: 100%;
+}
 
-        <!-- 3. TELA DE FINALIZAÇÃO (GAME OVER) -->
-        <div id="game-over-screen" class="screen hidden">
-            <div class="game-over-header">
-                <h1 class="danger">MISSÃO FRACASSADA</h1>
-                <p>Sua nave não resistiu aos impactos na atmosfera espacial.</p>
-            </div>
+/* ESTILIZAÇÃO DAS TELAS (TELA INICIAL E FINAL) */
+.screen {
+    position: absolute;
+    inset: 0;
+    background: var(--bg-dark);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 60px 40px;
+    text-align: center;
+    z-index: 10;
+    animation: fadeIn 0.3s ease-out;
+}
 
-            <div class="score-summary">
-                <div class="summary-box">
-                    <span>Pontuação Final</span>
-                    <h2 id="final-score">0</h2>
-                </div>
-                <div id="new-record-tag" class="record-badge hidden">NOVO RECORDE!</div>
-            </div>
+/* DESIGN DO LOGO DA CAPA */
+.game-logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+.logo-main {
+    font-size: 3.5rem;
+    font-weight: 900;
+    letter-spacing: 6px;
+    color: var(--primary);
+    text-shadow: 0 0 25px rgba(0, 255, 200, 0.4);
+    line-height: 1;
+}
+.logo-sub {
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 8px;
+    color: var(--text-muted);
+}
+.game-tagline {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    max-width: 280px;
+}
 
-            <div class="menu-buttons">
-                <button id="restart-btn" class="btn btn-primary">TENTAR NOVAMENTE</button>
-                <button id="back-to-menu-btn" class="btn btn-secondary">VOLTAR AO MENU</button>
-            </div>
-        </div>
+/* BOTÕES PROFISSIONAIS */
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    max-width: 260px;
+}
+.btn {
+    padding: 14px 20px;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.btn-primary {
+    background: var(--primary);
+    color: #020205;
+    box-shadow: 0 4px 20px rgba(0, 255, 200, 0.25);
+}
+.btn-primary:hover {
+    background: var(--primary-dim);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(0, 255, 200, 0.4);
+}
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.06);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.2);
+}
 
-        <!-- Canvas onde o jogo roda graficamente -->
-        <canvas id="gameCanvas"></canvas>
-    </div>
+/* MODAL DE INSTRUÇÕES */
+.modal {
+    position: absolute;
+    inset: 0;
+    background: rgba(2, 2, 5, 0.85);
+    backdrop-filter: blur(6px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 20;
+    padding: 30px;
+}
+.modal-content {
+    background: #0b0b18;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 30px;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.instruction-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    text-align: left;
+    color: #d1d1de;
+    font-size: 0.9rem;
+}
+.key-cap {
+    background: #202038;
+    border: 1px solid #38385c;
+    border-radius: 4px;
+    padding: 5px 12px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    box-shadow: 0 3px 0 #121224;
+}
 
-    <script type="module">
-        import { GameEngine } from './js/Engine.js';
-        window.addEventListener('DOMContentLoaded', () => {
-            const game = new GameEngine();
-            game.start();
-        });
-    </script>
-</body>
-</html>
+/* INTERFACE DO JOGO EM ANDAMENTO (HUD) */
+.interface-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 5;
+}
+.hud-top {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+.hud-box {
+    background: rgba(10, 10, 25, 0.6);
+    backdrop-filter: blur(4px);
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.hud-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+}
+.hud-value {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #ffffff;
+}
+.hud-bottom {
+    width: 100%;
+    background: rgba(10, 10, 25, 0.6);
+    padding: 12px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.health-bar-container {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}
+.health-bar-fill {
+    width: 100%;
+    height: 100%;
+    background: var(--primary);
+    border-radius: 4px;
+    transition: width 0.15s ease-out, background-color 0.3s;
+}
+
+/* DESIGN DO GAME OVER */
+.game-over-header h1 {
+    font-size: 2.2rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+}
+.score-summary {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+.summary-box {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 20px 40px;
+    border-radius: 12px;
+}
+.summary-box span {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.summary-box h2 {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-top: 5px;
+}
+.record-badge {
+    background: #ffaa00;
+    color: #000000;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 4px 12px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+    animation: pulse 1s infinite alternate;
+}
+
+/* UTILITÁRIOS */
+.danger { color: var(--danger); }
+.hidden { display: none !important; }
+.menu-footer { font-size: 0.85rem; color: var(--text-muted); }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(1.02); }
+    to { opacity: 1; transform: scale(1); }
+}
+@keyframes pulse {
+    from { transform: scale(1); opacity: 0.9; }
+    to { transform: scale(1.08); opacity: 1; }
+}
