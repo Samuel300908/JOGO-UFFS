@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Jogo no GitHub</title>
+    <!-- Aqui conectamos com o arquivo que está dentro da pasta css -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div id="game-container">
+        <!-- Placar e Telas do Jogo -->
+        <div id="ui-layer">
+            <div id="hud">
+                <div>Pontos: <span id="score">0</span></div>
+                <div>Recorde: <span id="high-score">0</span></div>
+            </div>
+
+            <!-- Tela Inicial -->
+            <div id="menu-screen" class="screen">
+                <h1>SPACE EXPEDITION</h1>
+                <p>Use as setas Esquerda e Direita (←  →) para desviar.</p>
+                <button id="start-btn" class="btn">Jogar</button>
+            </div>
+
+            <!-- Tela de Fim de Jogo -->
+            <div id="game-over-screen" class="screen hidden">
+                <h1 class="danger">GAME OVER</h1>
+                <button id="restart-btn" class="btn">Tentar De Novo</button>
+            </div>
+        </div>
+
+        <!-- O quadrado preto onde o jogo acontece de verdade -->
+        <canvas id="gameCanvas"></canvas>
+    </div>
+
+    <!-- Aqui chamamos o código principal que está dentro da pasta js -->
+    <script type="module">
+        import { GameEngine } from './js/Engine.js';
+        window.addEventListener('DOMContentLoaded', () => {
+            const game = new GameEngine();
+            game.start();
+        });
+    </script>
+</body>
+</html>
